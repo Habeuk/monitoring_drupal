@@ -1,0 +1,15 @@
+monitoring_drupal.example:
+  path: '/monitoring-drupal/example'
+  defaults:
+    _title: 'Example'
+    _controller: '\Drupal\monitoring_drupal\Controller\MonitoringDrupalController::build'
+  requirements:
+    _permission: 'access content'
+
+monitoring_drupal.settings_form:
+  path: '/admin/config/system/monitoring-drupal'
+  defaults:
+    _title: 'monitoring_drupal settings'
+    _form: 'Drupal\monitoring_drupal\Form\SettingsForm'
+  requirements:
+    _permission: 'administer monitoring_drupal configuration'

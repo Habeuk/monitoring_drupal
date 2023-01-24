@@ -1,0 +1,6 @@
+services:
+  monitoring_drupal.event_subscriber:
+    class: Drupal\monitoring_drupal\EventSubscriber\MonitoringDrupalSubscriber
+    arguments: ['@messenger']
+    tags:
+      - { name: event_subscriber }

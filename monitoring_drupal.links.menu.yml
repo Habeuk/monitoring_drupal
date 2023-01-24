@@ -1,0 +1,6 @@
+monitoring_drupal.settings_form:
+  title: 'monitoring_drupal'
+  description: 'Configure monitoring_drupal.'
+  parent: system.admin_config_system
+  route_name: monitoring_drupal.settings_form
+  weight: 10

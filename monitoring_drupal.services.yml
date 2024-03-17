@@ -4,3 +4,9 @@ services:
     arguments: ['@messenger']
     tags:
       - { name: event_subscriber }
+  monitoring_drupal.stopwatch:
+    class: Symfony\Component\Stopwatch\Stopwatch
+    arguments: []
+  monitoring_drupal.basic:
+    class: Symfony\Component\Stopwatch\Stopwatch
+    arguments: []

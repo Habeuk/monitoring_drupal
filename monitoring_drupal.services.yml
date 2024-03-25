@@ -8,5 +8,8 @@ services:
     class: Symfony\Component\Stopwatch\Stopwatch
     arguments: []
   monitoring_drupal.basic:
-    class: Symfony\Component\Stopwatch\Stopwatch
+    class: Drupal\monitoring_drupal\Services\BasicMonitoring
+    arguments: []
+  monitoring_drupal.timer:
+    class: Drupal\monitoring_drupal\Services\TimerMonitoring
     arguments: []

@@ -1,5 +1,5 @@
 {
-  "name": "stephane888/monitoring_drupal",
+  "name": "habeuk/monitoring_drupal",
   "description": "permet de faire un profilage basique.",
   "type": "drupal-custom-module",
   "license": "MIT",

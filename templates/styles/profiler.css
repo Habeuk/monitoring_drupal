@@ -1,45 +1,3 @@
-<div id="monitoring-drupal-profiler" class="md-profiler">
-  <div class="md-profiler-bar">
-    {# Bloc Temps d'exécution #}
-    {% include '@monitoring_drupal/includes/profiler-time.html.twig' with {
-      time: time
-    } only %}
-    
-    {# Bloc Mémoire #}
-    {% include '@monitoring_drupal/includes/profiler-memory.html.twig' with {
-      memory: memory
-    } only %}
-    
-    {# Bloc Requêtes SQL #}
-    {% include '@monitoring_drupal/includes/profiler-queries.html.twig' with {
-      queries: queries,
-      queries_time: queries_time,
-      queries_list: queries_list
-    } only %}
-    
-    {# Bloc Cache #}
-    {% include '@monitoring_drupal/includes/profiler-cache.html.twig' with {
-      cache_hits: cache_hits,
-      cache_misses: cache_misses,
-      cache_ratio: cache_ratio
-    } only %}
-    
-    {# Bloc Erreurs Cache #}
-    {% if caches_errors is not empty %}
-      {% include '@monitoring_drupal/includes/profiler-cache-errors.html.twig' with {
-        caches_errors: caches_errors
-      } only %}
-    {% endif %}
-  </div>
-</div>
-
-{# Inclusion du CSS #}
-<style>
-  {% include '@monitoring_drupal/styles/profiler.css' %}
-</style>
-
-{#
-<style>
 .md-profiler {
   position: fixed;
   bottom: 0;
@@ -180,5 +138,3 @@
     left: -100px;
   }
 }
-</style>
-#}

@@ -39,6 +39,8 @@ class MonitoringDrupalSubscriber implements EventSubscriberInterface {
     }
     $this->stopwatch->openSection();
     $this->stopwatch->start('drupal_request', 'request');
+    // on lance la collecte des requtes.
+    \Drupal\Core\Database\Database::startLog('wb_horizon_full_querry');
   }
   
   /**
@@ -83,6 +85,8 @@ class MonitoringDrupalSubscriber implements EventSubscriberInterface {
       '#time' => $collectors['time']->getTotalTime(),
       '#memory' => memory_get_peak_usage(true) / 1024 / 1024,
       '#queries' => $collectors['database']->getQueryCount(),
+      '#queries_time' => $collectors['database']->getTotalTime() * 1000,
+      '#queries_list' => $collectors['database']->getQueries(),
       '#cache_hits' => $collectors['cache']->getTotalHits(),
       '#cache_misses' => $collectors['cache']->getTotalMisses(),
       '#cache_ratio' => $collectors['cache']->getHitRatio(),

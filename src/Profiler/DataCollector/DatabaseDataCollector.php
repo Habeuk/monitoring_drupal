@@ -19,8 +19,7 @@ class DatabaseDataCollector implements DataCollectorInterface {
   }
   
   public function collect(Request $request, Response $response, \Throwable $exception = null) {
-    $queries = Database::getLog('default');
-    
+    $queries = Database::getLog('wb_horizon_full_querry');
     $this->data = [
       'query_count' => count($queries),
       'queries' => $queries,

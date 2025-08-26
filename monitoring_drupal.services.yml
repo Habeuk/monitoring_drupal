@@ -1,9 +1,4 @@
 services:
-  monitoring_drupal.event_subscriber:
-    class: Drupal\monitoring_drupal\EventSubscriber\MonitoringDrupalSubscriber
-    arguments: ['@messenger']
-    tags:
-      - { name: event_subscriber }
   monitoring_drupal.stopwatch:
     class: Symfony\Component\Stopwatch\Stopwatch
     arguments: []
@@ -13,3 +8,49 @@ services:
   monitoring_drupal.timer:
     class: Drupal\monitoring_drupal\Services\TimerMonitoring
     arguments: []
+
+  monitoring_drupal.profiler:
+    class: Drupal\monitoring_drupal\Profiler\Profiler
+    arguments: ['@monitoring_drupal.data_collectors', '@event_dispatcher']
+  
+  monitoring_drupal.data_collectors:
+    class: Drupal\Core\DependencyInjection\Container
+    factory: ['@monitoring_drupal.profiler_service_provider', 'getDataCollectors']
+  
+  monitoring_drupal.profiler_service_provider:
+    class: Drupal\monitoring_drupal\Profiler\ProfilerServiceProvider
+    arguments: ['@container']
+ 
+  monitoring_drupal.subscriber:
+    class: Drupal\monitoring_drupal\EventSubscriber\MonitoringDrupalSubscriber
+    arguments: 
+      - '@messenger'
+      - '@monitoring_drupal.profiler'
+      - '@monitoring_drupal.stopwatch'
+      - '@renderer'
+      - '@module_handler'
+    tags:
+      - { name: event_subscriber }
+  
+  monitoring_drupal.data_collector.database:
+    class: Drupal\monitoring_drupal\Profiler\DataCollector\DatabaseDataCollector
+    arguments: ['@database']
+    tags:
+      - { name: data_collector, id: database }
+  
+  monitoring_drupal.data_collector.memory:
+    class: Drupal\monitoring_drupal\Profiler\DataCollector\MemoryDataCollector
+    tags:
+      - { name: data_collector, id: memory }
+  
+  monitoring_drupal.data_collector.time:
+    class: Drupal\monitoring_drupal\Profiler\DataCollector\TimeDataCollector
+    arguments: ['@monitoring_drupal.stopwatch']
+    tags:
+      - { name: data_collector, id: time }
+  
+  monitoring_drupal.data_collector.cache:
+    class: Drupal\monitoring_drupal\Profiler\DataCollector\CacheDataCollector
+    arguments: ['@cache.default']
+    tags:
+      - { name: data_collector, id: cache }

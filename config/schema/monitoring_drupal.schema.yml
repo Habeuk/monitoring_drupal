@@ -1,8 +1,16 @@
-# Schema for the configuration files of the monitoring_drupal module.
 monitoring_drupal.settings:
   type: config_object
-  label: 'monitoring_drupal settings'
+  label: 'Monitoring Drupal settings'
   mapping:
-    example:
-      type: string
-      label: 'Example'
+    enabled:
+      type: boolean
+      label: 'Enable profiler'
+    show_toolbar:
+      type: boolean
+      label: 'Show toolbar'
+    allowed_roles:
+      type: sequence
+      label: 'Allowed roles'
+      sequence:
+        type: string
+        label: 'Role'

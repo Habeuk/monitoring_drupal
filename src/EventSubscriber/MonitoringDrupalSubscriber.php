@@ -11,6 +11,7 @@ use Drupal\monitoring_drupal\Services\TimerMonitoring;
 use Drupal\monitoring_drupal\Profiler\Profiler;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Component\HttpFoundation\Response;
+use Drupal\Core\Render\RendererInterface;
 
 /**
  * monitoring_drupal event subscriber.
@@ -23,7 +24,7 @@ class MonitoringDrupalSubscriber implements EventSubscriberInterface {
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *        The messenger.
    */
-  public function __construct(private MessengerInterface $messenger, private Profiler $profiler, private Stopwatch $stopwatch) {
+  public function __construct(private MessengerInterface $messenger, private Profiler $profiler, private Stopwatch $stopwatch, private RendererInterface $renderer, private ModuleHandlerInterface $moduleHandler) {
   }
   
   /**
@@ -37,7 +38,7 @@ class MonitoringDrupalSubscriber implements EventSubscriberInterface {
       return;
     }
     $this->stopwatch->openSection();
-    $this->stopwatch->start('request', 'request');
+    $this->stopwatch->start('drupal_request', 'request');
   }
   
   /**
@@ -51,7 +52,7 @@ class MonitoringDrupalSubscriber implements EventSubscriberInterface {
       return;
     }
     
-    $this->stopwatch->stop('request');
+    $this->stopwatch->stop('drupal_request');
     $this->profiler->collect($event->getRequest(), $event->getResponse());
     
     // Ajouter la toolbar au response
@@ -59,14 +60,14 @@ class MonitoringDrupalSubscriber implements EventSubscriberInterface {
   }
   
   protected function injectToolbar(Response $response) {
+    $content = $response->getContent();
+    
     if (strpos($response->headers->get('Content-Type'), 'text/html') === false) {
       return;
     }
     
-    $content = $response->getContent();
     $toolbar = $this->renderToolbar();
     
-    // Insérer la toolbar avant la fermeture du body
     $pos = strripos($content, '</body>');
     if ($pos !== false) {
       $content = substr($content, 0, $pos) . $toolbar . substr($content, $pos);
@@ -77,18 +78,15 @@ class MonitoringDrupalSubscriber implements EventSubscriberInterface {
   protected function renderToolbar(): string {
     $collectors = $this->profiler->getCollectors();
     
-    $data = [
-      'time' => $collectors['time']->getTotalTime(),
-      'memory' => memory_get_peak_usage(true) / 1024 / 1024,
-      'queries' => $collectors['database']->getQueryCount() ?? 0
+    $build = [
+      '#theme' => 'webprofiler_profiler_toolbar',
+      '#time' => $collectors['time']->getTotalTime(),
+      '#memory' => memory_get_peak_usage(true) / 1024 / 1024,
+      '#queries' => $collectors['database']->getQueryCount(),
+      '#cache_hits' => $collectors['cache']->getCacheHits()
     ];
     
-    return '
-    <div id="web-profiler" style="position: fixed; bottom: 0; right: 0; background: #333; color: white; padding: 10px; z-index: 10000;">
-      Time: ' . round($data['time'] * 1000, 2) . 'ms |
-      Memory: ' . round($data['memory'], 2) . 'MB |
-      Queries: ' . $data['queries'] . '
-    </div>';
+    return $this->renderer->render($build);
   }
   
   /**

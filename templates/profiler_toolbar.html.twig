@@ -1,19 +1,15 @@
 <div id="monitoring-drupal-profiler" class="md-profiler">
   <div class="md-profiler-bar">
-    {# Bloc Temps d'exécution #}
-    {% include '@monitoring_drupal/includes/profiler-time.html.twig' with {
-      time: time
-    } only %}    
-    {# Bloc Mémoire #}
-    {% include '@monitoring_drupal/includes/profiler-memory.html.twig' with {
-      memory: memory
-    } only %}    
-    {# Bloc Requêtes SQL #}
+  	{# Bloc Requêtes SQL #}
     {% include '@monitoring_drupal/includes/profiler-queries.html.twig' with {
       queries: queries,
       queries_time: queries_time,
       queries_list: queries_list
-    } only %}    
+    } only %}  
+    {# Bloc Temps d'exécution #}
+    {% include '@monitoring_drupal/includes/profiler-time.html.twig' with { time: time } only %}    
+    {# Bloc Mémoire #}
+    {% include '@monitoring_drupal/includes/profiler-memory.html.twig' with {  memory: memory } only %}  
     {# Bloc Cache #}
     {% include '@monitoring_drupal/includes/profiler-cache.html.twig' with {
       cache_hits: cache_hits,
@@ -26,9 +22,21 @@
         caches_errors: caches_errors
       } only %}
     {% endif %}
+    {# Bloc Informations Requête #}
+    {% include '@monitoring_drupal/includes/profiler-request.html.twig' with {
+      request_data: request_data,
+      response_data: response_data
+    } only %}
+    {# Bloc Informations Additionnelles #}
+    {% if additional_info is not empty %}
+      {% include '@monitoring_drupal/includes/profiler-additional.html.twig' with {
+        additional_info: additional_info
+      } only %}
+    {% endif %}
   </div>
+  <style>
+      {% include '@monitoring_drupal/styles/profiler.css' %}
+  </style>
 </div>
-<style>
-  {% include '@monitoring_drupal/styles/profiler.css' %}
-</style>
+
 

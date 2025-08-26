@@ -1,0 +1,18 @@
+<span class="md-profiler-item md-profiler-additional" title="Informations additionnelles - Route: {{ additional_info.route_name|default('N/A') }} - Locale: {{ additional_info.locale|default('N/A') }}">
+  <span class="md-profiler-label">📊</span>
+  <span class="md-profiler-value">+{{ additional_info|length }} infos {{ additional_info.controller }}</span>  
+  <div class="md-profiler-details">
+  	<ul>
+        {% for key, value in additional_info %}
+            <li>
+              <strong>{{ key }}:</strong> 
+              {% if value is iterable %}
+                <pre class="md-profiler-array">{{ value|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+              {% else %}
+                <span class="md-profiler-scalar">{{ value }}</span>
+              {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+  </div>
+</span>

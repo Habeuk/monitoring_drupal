@@ -15,7 +15,7 @@ class Profiler {
   protected $collectors = [];
   protected $eventDispatcher;
   
-  public function __construct(Container $container, EventDispatcherInterface $eventDispatcher) {
+  public function __construct(private Container $container, EventDispatcherInterface $eventDispatcher) {
     $this->container = $container;
     $this->eventDispatcher = $eventDispatcher;
     $this->initializeCollectors();

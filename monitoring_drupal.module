@@ -8,11 +8,10 @@ function monitoring_drupal_theme(): array {
     'webprofiler_profiler_toolbar' => [
       'template' => 'profiler_toolbar',
       'variables' => [
-        'excluded_ajax_paths' => '^\/.*\/profiler\/[a-z0-9]*',
-        'token' => '',
-        'request' => NULL,
-        'csp_script_nonce' => '',
-        'csp_style_nonce' => ''
+        'time' => NULL,
+        'memory' => '',
+        'queries' => NULL,
+        'cache_hits' => ''
       ]
     ]
   ];

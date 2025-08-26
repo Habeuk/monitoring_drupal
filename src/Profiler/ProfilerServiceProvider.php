@@ -12,17 +12,24 @@ use Symfony\Component\DependencyInjection\Reference;
 class ProfilerServiceProvider extends ServiceProviderBase {
   protected $container;
   
-  public function __construct($container) {
-    $this->container = $container;
+  public function register(ContainerBuilder $container) {
+    // On enlève la factory problématique et on crée les collectors directement
   }
   
-  public function getDataCollectors() {
+  public static function getDataCollectors(ContainerBuilder $container) {
     $collectors = [];
-    $serviceIds = $this->container->getServiceIds();
+    
+    // Récupère manuellement les services sans créer de dépendance circulaire
+    $serviceIds = [
+      'monitoring_drupal.data_collector.database',
+      'monitoring_drupal.data_collector.memory',
+      'monitoring_drupal.data_collector.time',
+      'monitoring_drupal.data_collector.cache'
+    ];
     
     foreach ($serviceIds as $serviceId) {
-      if (strpos($serviceId, 'monitoring_drupal.data_collector.') === 0) {
-        $collector = $this->container->get($serviceId);
+      if ($container->has($serviceId)) {
+        $collector = $container->get($serviceId);
         $collectors[$collector->getName()] = $collector;
       }
     }

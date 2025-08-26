@@ -24,7 +24,7 @@ class MonitoringDrupalSubscriber implements EventSubscriberInterface {
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *        The messenger.
    */
-  public function __construct(private MessengerInterface $messenger, private Profiler $profiler, private Stopwatch $stopwatch, private RendererInterface $renderer, private ModuleHandlerInterface $moduleHandler) {
+  public function __construct(private MessengerInterface $messenger, private Profiler $profiler, private Stopwatch $stopwatch, private RendererInterface $renderer) {
   }
   
   /**
@@ -86,7 +86,7 @@ class MonitoringDrupalSubscriber implements EventSubscriberInterface {
       '#cache_hits' => $collectors['cache']->getCacheHits()
     ];
     
-    return $this->renderer->render($build);
+    return $this->renderer->renderInIsolation($build);
   }
   
   /**

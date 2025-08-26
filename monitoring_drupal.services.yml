@@ -11,15 +11,15 @@ services:
 
   monitoring_drupal.profiler:
     class: Drupal\monitoring_drupal\Profiler\Profiler
-    arguments: ['@monitoring_drupal.data_collectors', '@event_dispatcher']
+    arguments: ['@service_container', '@event_dispatcher']
   
-  monitoring_drupal.data_collectors:
-    class: Drupal\Core\DependencyInjection\Container
-    factory: ['@monitoring_drupal.profiler_service_provider', 'getDataCollectors']
+#  monitoring_drupal.data_collectors:
+#    class: Drupal\Core\DependencyInjection\Container
+#    factory: ['@monitoring_drupal.profiler_service_provider', 'getDataCollectors']
   
   monitoring_drupal.profiler_service_provider:
     class: Drupal\monitoring_drupal\Profiler\ProfilerServiceProvider
-    arguments: ['@container']
+    arguments: ['@service_container']
  
   monitoring_drupal.subscriber:
     class: Drupal\monitoring_drupal\EventSubscriber\MonitoringDrupalSubscriber
@@ -28,7 +28,6 @@ services:
       - '@monitoring_drupal.profiler'
       - '@monitoring_drupal.stopwatch'
       - '@renderer'
-      - '@module_handler'
     tags:
       - { name: event_subscriber }
   

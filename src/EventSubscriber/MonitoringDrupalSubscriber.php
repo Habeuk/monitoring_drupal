@@ -8,6 +8,9 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Drupal\monitoring_drupal\Services\TimerMonitoring;
+use Drupal\monitoring_drupal\Profiler\Profiler;
+use Symfony\Component\Stopwatch\Stopwatch;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * monitoring_drupal event subscriber.
@@ -15,20 +18,12 @@ use Drupal\monitoring_drupal\Services\TimerMonitoring;
 class MonitoringDrupalSubscriber implements EventSubscriberInterface {
   
   /**
-   * The messenger.
-   *
-   * @var \Drupal\Core\Messenger\MessengerInterface
-   */
-  protected $messenger;
-  
-  /**
    * Constructs event subscriber.
    *
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *        The messenger.
    */
-  public function __construct(MessengerInterface $messenger) {
-    $this->messenger = $messenger;
+  public function __construct(private MessengerInterface $messenger, private Profiler $profiler, private Stopwatch $stopwatch) {
   }
   
   /**
@@ -38,8 +33,11 @@ class MonitoringDrupalSubscriber implements EventSubscriberInterface {
    *        Response event.
    */
   public function onKernelRequest(RequestEvent $event) {
-    TimerMonitoring::start('start_build_page');
-    // $this->messenger->addStatus(__FUNCTION__);
+    if (!$event->isMainRequest()) {
+      return;
+    }
+    $this->stopwatch->openSection();
+    $this->stopwatch->start('request', 'request');
   }
   
   /**
@@ -49,9 +47,48 @@ class MonitoringDrupalSubscriber implements EventSubscriberInterface {
    *        Response event.
    */
   public function onKernelResponse(ResponseEvent $event) {
-    // $this->messenger->addStatus(__FUNCTION__);
-    $time = TimerMonitoring::stop('start_build_page');
-    // dump($time);
+    if (!$event->isMainRequest()) {
+      return;
+    }
+    
+    $this->stopwatch->stop('request');
+    $this->profiler->collect($event->getRequest(), $event->getResponse());
+    
+    // Ajouter la toolbar au response
+    $this->injectToolbar($event->getResponse());
+  }
+  
+  protected function injectToolbar(Response $response) {
+    if (strpos($response->headers->get('Content-Type'), 'text/html') === false) {
+      return;
+    }
+    
+    $content = $response->getContent();
+    $toolbar = $this->renderToolbar();
+    
+    // Insérer la toolbar avant la fermeture du body
+    $pos = strripos($content, '</body>');
+    if ($pos !== false) {
+      $content = substr($content, 0, $pos) . $toolbar . substr($content, $pos);
+      $response->setContent($content);
+    }
+  }
+  
+  protected function renderToolbar(): string {
+    $collectors = $this->profiler->getCollectors();
+    
+    $data = [
+      'time' => $collectors['time']->getTotalTime(),
+      'memory' => memory_get_peak_usage(true) / 1024 / 1024,
+      'queries' => $collectors['database']->getQueryCount() ?? 0
+    ];
+    
+    return '
+    <div id="web-profiler" style="position: fixed; bottom: 0; right: 0; background: #333; color: white; padding: 10px; z-index: 10000;">
+      Time: ' . round($data['time'] * 1000, 2) . 'ms |
+      Memory: ' . round($data['memory'], 2) . 'MB |
+      Queries: ' . $data['queries'] . '
+    </div>';
   }
   
   /**
@@ -61,12 +98,13 @@ class MonitoringDrupalSubscriber implements EventSubscriberInterface {
   public static function getSubscribedEvents() {
     return [
       KernelEvents::REQUEST => [
-        'onKernelRequest'
+        'onKernelRequest',
+        1000
       ],
       KernelEvents::RESPONSE => [
-        'onKernelResponse'
+        'onKernelResponse',
+        1000
       ]
     ];
   }
-  
 }

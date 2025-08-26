@@ -10,5 +10,8 @@
     }
   ],
   "minimum-stability": "dev",
-  "require": {}
+  "require": {
+  	"symfony/var-dumper" : "^6",
+  	"symfony/stopwatch" : "^6"
+  }
 }

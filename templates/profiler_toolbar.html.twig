@@ -3,27 +3,23 @@
     {# Bloc Temps d'exécution #}
     {% include '@monitoring_drupal/includes/profiler-time.html.twig' with {
       time: time
-    } only %}
-    
+    } only %}    
     {# Bloc Mémoire #}
     {% include '@monitoring_drupal/includes/profiler-memory.html.twig' with {
       memory: memory
-    } only %}
-    
+    } only %}    
     {# Bloc Requêtes SQL #}
     {% include '@monitoring_drupal/includes/profiler-queries.html.twig' with {
       queries: queries,
       queries_time: queries_time,
       queries_list: queries_list
-    } only %}
-    
+    } only %}    
     {# Bloc Cache #}
     {% include '@monitoring_drupal/includes/profiler-cache.html.twig' with {
       cache_hits: cache_hits,
       cache_misses: cache_misses,
       cache_ratio: cache_ratio
-    } only %}
-    
+    } only %}    
     {# Bloc Erreurs Cache #}
     {% if caches_errors is not empty %}
       {% include '@monitoring_drupal/includes/profiler-cache-errors.html.twig' with {
@@ -32,153 +28,7 @@
     {% endif %}
   </div>
 </div>
-
-{# Inclusion du CSS #}
 <style>
   {% include '@monitoring_drupal/styles/profiler.css' %}
 </style>
 
-{#
-<style>
-.md-profiler {
-  position: fixed;
-  bottom: 0;
-  right: auto;
-  left: 0;
-  top: auto;
-  background: #2d2d2d;
-  color: #fff;
-  padding: 8px 16px;
-  z-index: 10000;
-  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-  font-size: 12px;
-  border-top-right-radius: 8px;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
-  border: 1px solid #444;
-  backdrop-filter: blur(5px);
-}
-
-.md-profiler-bar {
-  display: flex;
-  gap: 24px;
-  align-items: center;
-  position: relative;
-}
-
-.md-profiler-item {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  cursor: help;
-  transition: opacity 0.2s ease;
-  position: relative;
-}
-
-.md-profiler-item:hover {
-  opacity: 0.8;
-}
-
-.md-profiler-label {
-  color: #a0a0a0;
-  font-size: 14px;
-}
-
-.md-profiler-value {
-  color: #fff;
-  font-weight: 600;
-  background: rgba(255,255,255,0.1);
-  padding: 2px 6px;
-  border-radius: 4px;
-  min-width: 40px;
-  text-align: center;
-}
-
-/* Styles pour le popup des requêtes */
-.md-profiler-queries {
-  position: relative;
-}
-
-.md-profiler-queries-details {
-  display: none;
-  position: absolute;
-  bottom: 100%;
-  left: 0;
-  background: #1a1a1a;
-  border: 1px solid #444;
-  border-radius: 8px;
-  padding: 16px;
-  width: 600px;
-  max-height: 400px;
-  overflow-y: auto;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-  z-index: 10001;
-  font-size: 11px;
-}
-
-.md-profiler-queries:hover .md-profiler-queries-details {
-  display: block;
-}
-
-.md-profiler-queries-header h3 {
-  margin: 0 0 12px 0;
-  color: #fff;
-  font-size: 14px;
-  border-bottom: 1px solid #444;
-  padding-bottom: 8px;
-}
-
-.md-profiler-query-item {
-  background: #2a2a2a;
-  border: 1px solid #444;
-  border-radius: 6px;
-  padding: 12px;
-  margin-bottom: 8px;
-}
-
-.md-profiler-query-time {
-  color: #4ec9b0;
-  font-weight: bold;
-  margin-bottom: 6px;
-}
-
-.md-profiler-query-sql {
-  color: #dcdcdc;
-  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-  white-space: pre-wrap;
-  word-break: break-all;
-  background: #1e1e1e;
-  padding: 8px;
-  border-radius: 4px;
-  margin-bottom: 6px;
-}
-
-.md-profiler-query-args,
-.md-profiler-query-caller {
-  color: #a0a0a0;
-  font-size: 10px;
-  margin-top: 4px;
-}
-
-.md-profiler-query-args pre,
-.md-profiler-query-caller pre {
-  margin: 4px 0;
-  white-space: pre-wrap;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .md-profiler-bar {
-    gap: 12px;
-  }
-  
-  .md-profiler-label {
-    display: none;
-  }
-  
-  .md-profiler-queries-details {
-    width: 300px;
-    left: -100px;
-  }
-}
-</style>
-#}

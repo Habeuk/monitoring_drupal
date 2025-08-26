@@ -27,14 +27,11 @@
   display: flex;
   gap: 6px;
   align-items: center;
-  cursor: help;
-  transition: opacity 0.2s ease;
+ /* cursor: help; */
   position: relative;
 }
 
-.md-profiler-item:hover {
-  opacity: 0.8;
-}
+
 
 .md-profiler-label {
   color: #a0a0a0;
@@ -53,7 +50,7 @@
 
 /* Styles pour le popup des requêtes */
 .md-profiler-queries {
-  position: relative;
+ /* position: relative;*/
 }
 
 .md-profiler-queries-details {
@@ -65,12 +62,15 @@
   border: 1px solid #444;
   border-radius: 8px;
   padding: 16px;
-  width: 600px;
-  max-height: 400px;
+  width: auto;
+  min-width: 700px;
+  max-width: 1000px;
+  max-height: 800px;
   overflow-y: auto;
   box-shadow: 0 4px 20px rgba(0,0,0,0.5);
   z-index: 10001;
   font-size: 11px;
+  opacity: 1;
 }
 
 .md-profiler-queries:hover .md-profiler-queries-details {

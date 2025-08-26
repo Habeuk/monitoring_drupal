@@ -1,6 +1,115 @@
 <span class="md-profiler-item md-profiler-queries" title="Requêtes SQL - Cliquez pour plus de détails">
   <span class="md-profiler-label">🗃</span>
   <span class="md-profiler-value">{{ queries }} requêtes en {{ queries_time|number_format(2) }}ms</span>
+  
+  <div class="md-profiler-queries-details">
+    <div class="md-profiler-queries-header">
+      <h3>{{ queries }} Requêtes SQL ({{ queries_time|number_format(2) }}ms)</h3>
+    </div>
+    
+    <div class="accordion" id="profilerQueriesAccordion">
+      {% for query in queries_list %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="heading{{ loop.index }}">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                  data-bs-target="#collapse{{ loop.index }}" aria-expanded="false" 
+                  aria-controls="collapse{{ loop.index }}">
+            <span class="badge bg-primary me-2">{{ (query.time * 1000)|number_format(2) }}ms</span>
+            {{ query.query|slice(0, 80) }}{% if query.query|length > 80 %}...{% endif %}
+          </button>
+        </h2>
+        <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" 
+             aria-labelledby="heading{{ loop.index }}" data-bs-parent="#profilerQueriesAccordion">
+          <div class="accordion-body">
+            <div class="mb-2">
+              <strong>Temps:</strong> {{ (query.time * 1000)|number_format(2) }}ms
+            </div>
+            
+            <div class="mb-2">
+              <strong>Requête:</strong>
+              <pre class="bg-dark text-light p-2 rounded mt-1" style="font-size: 11px; max-height: 150px; overflow: auto;">{{ query.query }}</pre>
+            </div>
+            
+            {% if query.args %}
+            <div class="mb-2">
+              <strong>Arguments:</strong>
+              <pre class="bg-dark text-light p-2 rounded mt-1" style="font-size: 11px; max-height: 100px; overflow: auto;">{{ query.args|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+            </div>
+            {% endif %}
+            
+            {% if query.caller.file %}
+            <div class="mb-2">
+              <strong>Appelée par:</strong>
+              <div class="text-wbu-secondary small">
+                {{ query.caller.file }}:{{ query.caller.line }}<br>
+                {% if query.caller.class %}
+                {{ query.caller.class }}{{ query.caller.type }}{{ query.caller.function }}()
+                {% endif %}
+              </div>
+            </div>
+            {% endif %}
+            
+            {% if query.target %}
+            <div class="mb-2">
+              <strong>Target:</strong> {{ query.target }}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</span>
+<style>
+/* Styles spécifiques pour l'accordéon dans le profiler */
+.md-profiler-queries-details .accordion {
+  font-size: 12px;
+}
+
+.md-profiler-queries-details .accordion-button {
+  padding: 0.5rem 1rem;
+  font-size: 11px;
+  background-color: #2a2a2a;
+  color: #fff;
+}
+
+.md-profiler-queries-details .accordion-button:not(.collapsed) {
+  background-color: #3a3a3a;
+  color: #fff;
+}
+
+.md-profiler-queries-details .accordion-button:focus {
+  box-shadow: none;
+  border-color: #444;
+}
+
+.md-profiler-queries-details .accordion-body {
+  padding: 0.75rem;
+  background-color: #000000;
+  color: #dcdcdc;
+}
+
+.md-profiler-queries-details .accordion-item {
+  background-color: transparent;
+  border: 1px solid #444;
+  margin-bottom: 0.5rem;
+}
+
+.md-profiler-queries-details .badge {
+  font-size: 10px;
+}
+
+.md-profiler-queries-details pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+</style>
+{#
+<span class="md-profiler-item md-profiler-queries" title="Requêtes SQL - Cliquez pour plus de détails">
+  <span class="md-profiler-label">🗃</span>
+  <span class="md-profiler-value">{{ queries }} requêtes en {{ queries_time|number_format(2) }}ms</span>
   <div class="md-profiler-queries-details">
     <div class="md-profiler-queries-header">
       <h3>{{ queries }} Requêtes SQL ({{ queries_time|number_format(2) }}ms)</h3>
@@ -23,3 +132,4 @@
     </div>
   </div>
 </span>
+#}

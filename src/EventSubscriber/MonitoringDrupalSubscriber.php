@@ -83,9 +83,12 @@ class MonitoringDrupalSubscriber implements EventSubscriberInterface {
       '#time' => $collectors['time']->getTotalTime(),
       '#memory' => memory_get_peak_usage(true) / 1024 / 1024,
       '#queries' => $collectors['database']->getQueryCount(),
-      '#cache_hits' => $collectors['cache']->getCacheHits()
+      '#cache_hits' => $collectors['cache']->getTotalHits(),
+      '#cache_misses' => $collectors['cache']->getTotalMisses(),
+      '#cache_ratio' => $collectors['cache']->getHitRatio(),
+      '#cache_sets' => $collectors['cache']->getTotalSets(),
+      '#caches_errors' => $collectors['cache']->getBinError()
     ];
-    
     return $this->renderer->renderInIsolation($build);
   }
   

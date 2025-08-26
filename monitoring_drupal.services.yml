@@ -35,7 +35,7 @@ services:
     class: Drupal\monitoring_drupal\Profiler\DataCollector\DatabaseDataCollector
     arguments: ['@database']
     tags:
-      - { name: data_collector, id: database }
+      - { name: data_collector, id: cache }
   
   monitoring_drupal.data_collector.memory:
     class: Drupal\monitoring_drupal\Profiler\DataCollector\MemoryDataCollector
@@ -50,6 +50,6 @@ services:
   
   monitoring_drupal.data_collector.cache:
     class: Drupal\monitoring_drupal\Profiler\DataCollector\CacheDataCollector
-    arguments: ['@cache.default']
+    arguments: []
     tags:
       - { name: data_collector, id: cache }

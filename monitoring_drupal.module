@@ -11,7 +11,11 @@ function monitoring_drupal_theme(): array {
         'time' => NULL,
         'memory' => '',
         'queries' => NULL,
-        'cache_hits' => ''
+        'cache_hits' => NULL,
+        'cache_misses' => NULL,
+        'cache_ratio' => NULL,
+        'cache_sets' => NULL,
+        'caches_errors' => NULL
       ]
     ]
   ];

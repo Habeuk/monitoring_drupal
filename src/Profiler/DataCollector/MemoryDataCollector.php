@@ -34,4 +34,8 @@ class MemoryDataCollector implements DataCollectorInterface {
   public function getPeakMemory(): int {
     return $this->data['memory_peak'] ?? 0;
   }
+  
+  public function getDatas() {
+    return $this->data;
+  }
 }

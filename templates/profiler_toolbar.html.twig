@@ -9,7 +9,7 @@
     {# Bloc Temps d'exécution #}
     {% include '@monitoring_drupal/includes/profiler-time.html.twig' with { time: time } only %}    
     {# Bloc Mémoire #}
-    {% include '@monitoring_drupal/includes/profiler-memory.html.twig' with {  memory: memory } only %}  
+    {% include '@monitoring_drupal/includes/profiler-memory.html.twig' with { memory_usage:memory_usage, memory_peak:memory_peak } only %}  
     {# Bloc Cache #}
     {% include '@monitoring_drupal/includes/profiler-cache.html.twig' with {
       cache_hits: cache_hits,

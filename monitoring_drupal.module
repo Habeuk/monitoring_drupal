@@ -9,7 +9,8 @@ function monitoring_drupal_theme(): array {
       'template' => 'profiler_toolbar',
       'variables' => [
         'time' => NULL,
-        'memory' => '',
+        'memory_usage' => NULL,
+        'memory_peak' => NULL,
         'queries' => NULL,
         'queries_list' => [],
         'queries_time' => NULL,

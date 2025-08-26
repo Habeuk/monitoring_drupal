@@ -34,6 +34,10 @@ class DatabaseDataCollector implements DataCollectorInterface {
     return 'database';
   }
   
+  public function getDatas() {
+    return $this->data;
+  }
+  
   public function reset() {
     $this->data = [];
   }

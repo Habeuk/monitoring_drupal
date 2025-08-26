@@ -119,7 +119,7 @@ class MonitoringDrupalSubscriber implements EventSubscriberInterface {
     // if ($response->getStatusCode() !== 200) {
     // return;
     // }
-    $this->messenger->addStatus("run onKernelResponse :: " . json_encode($this->responseData), true);
+    
     $this->stopwatch->stop('drupal_request');
     $this->profiler->collect($event->getRequest(), $event->getResponse());
     // Ajouter la toolbar au response
@@ -141,10 +141,13 @@ class MonitoringDrupalSubscriber implements EventSubscriberInterface {
   
   protected function renderToolbar(): string {
     $collectors = $this->profiler->getCollectors();
+    $memory_usage = $collectors['memory']->getMemoryUsage();
+    $memory_peak = $collectors['memory']->getPeakMemory();
     $build = [
       '#theme' => 'webprofiler_profiler_toolbar',
       '#time' => $collectors['time']->getTotalTime(),
-      '#memory' => memory_get_peak_usage(true) / 1024 / 1024,
+      '#memory_usage' => $memory_usage ? $memory_usage / 1024 / 1024 : 0,
+      '#memory_peak' => $memory_peak ? $memory_peak / 1024 / 1024 : 0,
       '#queries' => $collectors['database']->getQueryCount(),
       '#queries_time' => $collectors['database']->getTotalTime() * 1000,
       '#queries_list' => $collectors['database']->getQueries(),

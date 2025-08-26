@@ -1,4 +1,4 @@
-<span class="md-profiler-item" title="Mémoire peak">
+<span class="md-profiler-item" title="Memoire usage: {{ memory_usage|number_format(2) }} | Mémoire peak: {{ memory_peak|number_format(2) }}MB">
   <span class="md-profiler-label">💾</span>
-  <span class="md-profiler-value">{{ memory|number_format(2) }}MB</span>
+  <span class="md-profiler-value">{{ memory_usage|number_format(2) }}/{{ memory_peak|number_format(2) }}MB</span>
 </span>

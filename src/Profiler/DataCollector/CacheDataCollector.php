@@ -19,14 +19,18 @@ class CacheDataCollector implements DataCollectorInterface {
     $total_sets = 0;
     $bin_stats = [];
     $caches_error = [];
-    
     foreach ($caches as $bin => $cache) {
       if ('static' == $bin) {
         continue;
       }
       try {
         if ($cache) {
+          /**
+           *
+           * @var \Drupal\redis\Cache\PhpRedis $cache
+           */
           $stats = method_exists($cache, 'getStats') ? $cache->getStats() : [];
+          
           $bin_stats[$bin] = [
             'hits' => $stats['hits'] ?? 0,
             'misses' => $stats['misses'] ?? 0,

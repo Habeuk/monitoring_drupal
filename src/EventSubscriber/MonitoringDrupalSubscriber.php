@@ -128,14 +128,15 @@ class MonitoringDrupalSubscriber implements EventSubscriberInterface {
   
   protected function injectToolbar(Response $response) {
     $content = $response->getContent();
-    if (strpos($response->headers->get('Content-Type'), 'text/html') === false) {
-      return;
-    }
-    $toolbar = $this->renderToolbar();
-    $pos = strripos($content, '</body>');
-    if ($pos !== false) {
-      $content = substr($content, 0, $pos) . $toolbar . substr($content, $pos);
-      $response->setContent($content);
+    if (str_contains($this->responseData['content_type'], "text/html") || str_contains($this->responseData['content_type'], "application/json")) {
+      $toolbar = $this->renderToolbar();
+      if (!empty($toolbar)) {
+        $pos = strripos($content, '</body>');
+        if ($pos !== false) {
+          $content = substr($content, 0, $pos) . $toolbar . substr($content, $pos);
+          $response->setContent($content);
+        }
+      }
     }
   }
   
@@ -145,7 +146,7 @@ class MonitoringDrupalSubscriber implements EventSubscriberInterface {
     $memory_peak = $collectors['memory']->getPeakMemory();
     $build = [
       '#theme' => 'webprofiler_profiler_toolbar',
-      '#time' => $collectors['time']->getTotalTime(),
+      '#time' => $collectors['time']->getTotalTime() * 1000,
       '#memory_usage' => $memory_usage ? $memory_usage / 1024 / 1024 : 0,
       '#memory_peak' => $memory_peak ? $memory_peak / 1024 / 1024 : 0,
       '#queries' => $collectors['database']->getQueryCount(),
@@ -160,7 +161,17 @@ class MonitoringDrupalSubscriber implements EventSubscriberInterface {
       '#request_data' => $this->requestData,
       '#additional_info' => $this->additionalInfo
     ];
-    return $this->renderer->renderInIsolation($build);
+    if (!empty($this->requestData['uri'])) {
+      // $time = round($build['#time'], 3);
+      // $uri = $time . 'ms---' . str_replace('/', '__',
+      // $this->requestData['uri']);
+      // \Stephane888\Debug\debugLog::$max_depth = 10;
+      // \Stephane888\Debug\debugLog::symfonyDebug($build, $uri, true);
+    }
+    if (str_contains($this->responseData['content_type'], "text/html"))
+      return $this->renderer->renderInIsolation($build);
+    else
+      return '';
   }
   
   /**
